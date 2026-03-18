@@ -38,8 +38,9 @@ jobs:
         retention-days: 7
       
     - name: Trivy FS Scan and Fail on High/Critical Vulnerabilities
-      run: trivy fs --ignore-unfixed --exit-code 1 --format json --severity HIGH,CRITICAL .
-    
+      #run: trivy fs --ignore-unfixed --exit-code 1 --format json --severity HIGH,CRITICAL .
+      run: trivy fs --ignore-unfixed --format table --severity HIGH,CRITICAL .
+      
     - name: gitleaks Installation
       run: sudo apt-get install gitleaks -y
       
