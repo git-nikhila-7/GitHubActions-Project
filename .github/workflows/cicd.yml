@@ -28,9 +28,18 @@ jobs:
         echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
         sudo apt-get update
         sudo apt-get install trivy -y
-    - name: Trivy FS Scan
-      run: trivy fs --format table --severity HIGH,CRITICAL -o trivy-results.json .
-
+    - name: Generate Trivy Report
+      run: trivy fs --format table --exit-code 0 -o trivy-results.json .
+    - name: Upload Trivy Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: trivy-results.json
+        path: trivy-results.json
+        retention-days: 7
+      
+    - name: Trivy FS Scan and Fail on High/Critical Vulnerabilities
+      run: trivy fs --ignore-unfixed --exit-code 1 --format json --severity HIGH,CRITICAL .
+    
     - name: gitleaks Installation
       run: sudo apt-get install gitleaks -y
       
